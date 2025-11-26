@@ -1,0 +1,20 @@
+from rest_framework import generics
+from .models import SeuModelo
+from .serializers import SeuSerializer
+
+class SuaRegraCreateView(generics.CreateAPIView):
+    queryset = SeuModelo.objects.all()
+    serializer_class = SeuSerializer
+
+    def perform_create(self, serializer):
+        # Aqui você puxa o campo do objeto (via serializer.validated_data ou serializer.instance)
+        campo_desejado = serializer.validated_data.get('nome_do_campo')
+        
+        # Implementa sua regra de negócio
+        if campo_desejado > 100:
+            # Alguma lógica ou validação extra
+            print("Regra de negócio aplicada: Campo excede 100")
+            # Você pode até modificar um campo antes de salvar
+            serializer.validated_data['outro_campo'] = 'valor_modificado'
+        
+        # Salva o objeto no banco 
