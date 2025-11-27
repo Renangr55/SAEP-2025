@@ -12,14 +12,19 @@ from .views import (
     CategoryRetrieveUpdateDestroy,
 
     HistoricListCreate,
-    HistoricRetrieveUpdateDestroy
+    HistoricRetrieveUpdateDestroy,
+
+    UserLoginView
 
 )
+
+
 
 
 urlpatterns = [
     # user
     path('api/createListUser', UserListCreate.as_view(), name="createListUser"),
+    path('api/auth/login', UserLoginView.as_view()),
 
     # product
     path('api/createListProduct',  ProductListCreate.as_view(), name="createListProduct"),

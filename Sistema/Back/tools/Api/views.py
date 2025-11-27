@@ -23,6 +23,9 @@ from .serializers import(
 from .models import User
 from rest_framework import generics
 from django.http import HttpResponse
+from rest_framework.views import APIView
+from rest_framework.authtoken.models import Token
+from django.contrib.auth import authenticate
 
 # Create your views here.
 
@@ -36,6 +39,22 @@ class UserRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
+
+class UserLoginView(APIView):
+    def post(self, request):
+        username = request.data.get("username")
+        password = request.data.get("password")
+
+        if not username or not password:
+            return Response({"error": "username and password are required"}, status=400)
+
+        user = authenticate(username=username, password=password)
+
+        if user:
+            token, _ = Token.objects.get_or_create(user=user)
+            return Response({"token": token.key})
+        else:
+            return Response({"error": "Invalid credentials"}, status=401)
 
 
 #  Category

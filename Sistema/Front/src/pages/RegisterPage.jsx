@@ -10,9 +10,9 @@ import { useNavigate } from "react-router-dom"
 
 
 
-export const LoginPage  = () =>{
+export const RegisterPage  = () =>{
 
-    const loginSchema = z.object({
+    const registerPage = z.object({
         username: z.string().min(1,"required 1 caracter"),
         password: z.string().min(1, "required 1 caracter")
     })
@@ -22,7 +22,7 @@ export const LoginPage  = () =>{
         register, 
         handleSubmit, 
         formState: { errors } } = useForm({
-            resolver: zodResolver(loginSchema)
+            resolver: zodResolver(registerPage)
         });
     
     const onSubmit = async (data) => {
@@ -31,17 +31,14 @@ export const LoginPage  = () =>{
             "password": data.password
         })
 
-        try {
-            const response = await api.post("api/auth/login", payload);
-            console.log(response.data);
-
-            localStorage.setItem("token", response.data?.token);
-            navigate("/homepage");
-
-            alert("it was sucessfull");
-        } catch (error) {
-            alert(error.response?.data?.error || "Erro ao fazer login");
-            console.log("error", error.response?.data);
+        try{
+            const response = await api.post("api/createListUser",payload)
+            console.log(response.data)
+            navigate("/login")
+            alert("it was sucessfull")
+        } catch (error){
+            alert(error.response.data.username?.[0])
+            console.log("error", error.response.data)
         }
     }
     const navigate = useNavigate()
@@ -53,11 +50,12 @@ export const LoginPage  = () =>{
             <form onSubmit={handleSubmit(onSubmit)} className=" h-100">
                 <section className="flex flex-col bg-white h-100 w-100 justify-between">
                     <section className="flex justify-center">
-                        <h1 className="font-bold text-2xl pt-5">Sign In</h1>
+                        <h1 className="font-bold text-2xl pt-5">Create User</h1>
                     </section>
 
                     <section className="w-full flex flex-col justify-center items-center gap-1.5">
                         <Input
+                        inputType={"text"}
                         idInput={"usernameInput"}
                         labelId={"usernameInput"}
                         widthInput={"w-70"}
@@ -68,10 +66,11 @@ export const LoginPage  = () =>{
                         />
 
                         <Input 
-                        typeInput={"password"}
+                        inputType={"password"}
                         textLabel={"password"}
                         widthInput={"w-70"}
                         heightInput={"h-10"}
+                        
                         bgInput={"bg-gray-200"}
                         register={register("password")}
                         />
@@ -80,7 +79,7 @@ export const LoginPage  = () =>{
                     <section className="flex justify-center w-full pb-2">
                         <Button 
                         typeButton="submit" 
-                        children={"Sign now"} 
+                        children={"Create"} 
                         bgButton={"bg-linear-to-r from-blue-500 to-purple-500"} 
                         heightButton={"h-10"} 
                         widhtButton={"w-50"}
@@ -96,4 +95,4 @@ export const LoginPage  = () =>{
     )
 }
 
-export default LoginPage;
+export default RegisterPage;
