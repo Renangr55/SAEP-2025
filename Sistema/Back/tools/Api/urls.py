@@ -5,8 +5,8 @@ from .views import (
     ProductListCreate,
     ProductRetrieveUpdateDestroy,
 
-    add_quantity_product,
-    remove_quantity_product,
+    add_quantity_product_view,
+    remove_quantity_product_view,
 
     CategoryListCreate,
     CategoryRetrieveUpdateDestroy,
@@ -15,7 +15,7 @@ from .views import (
     HistoricRetrieveUpdateDestroy
 
 )
-# from . import views
+
 
 urlpatterns = [
     # user
@@ -34,7 +34,7 @@ urlpatterns = [
     path("api/updateDestroyRetriveHistoric/<int:pk>",HistoricRetrieveUpdateDestroy.as_view(), name="updateDestroyRetriveHistoric"),
 
     # add and remove Product
-    path("api/addProduct/", add_quantity_product, name="add_product"),
-    path("api/removeProduct", remove_quantity_product, name="remove_product")
+    path("api/addProduct/", add_quantity_product_view, name="add_product"),
+    path("api/removeProduct/", remove_quantity_product_view, name="remove_product")
 
     ]
