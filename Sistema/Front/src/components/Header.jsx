@@ -37,16 +37,12 @@ export const Header = () => {
                         Home
                     </Link>
 
-                    <Link to={"/createProduct"} className="text-white">
+                    <Link to={"/homepage/createProduct"} className="text-white">
                         Create Product
                     </Link>
 
-                    <Link to={""} className="text-white">
+                    <Link to={"/homepage/createCategory/"} className="text-white">
                             Create Category
-                    </Link>
-
-                    <Link to={""} className="text-white">
-                            See historic
                     </Link>
 
                     <Link to={"/homepage/stockcontrol"} className="text-white">
@@ -58,7 +54,7 @@ export const Header = () => {
 
                 </section>
 
-                <section className="w-20">
+                <section className="w-30">
                     <h1 className="text-white">Username: {username}</h1>
                 </section>
 

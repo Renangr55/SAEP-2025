@@ -57,8 +57,8 @@ class UserLoginView(APIView):
             token, _ = Token.objects.get_or_create(user=user)
             return Response({
                 "token": token.key,
-                "user_id": user.id,  # ✅ ID do usuário
-                "username": user.username,  # ✅ adiciona isso
+                "user_id": user.id,  
+                "username": user.username,  
                 "role": getattr(user, "role", None)  # se você tiver um campo role
             })
         else:

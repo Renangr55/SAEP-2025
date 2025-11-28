@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "react-router-dom";
+import { id } from "zod/v4/locales";
 
 // Schema Zod
 const movementSchema = z.object({
@@ -11,6 +13,7 @@ const movementSchema = z.object({
 
 export const Card = ({ dados, atributos, onDelete, onHistoricSubmit }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate()
 
   const imageURL = dados?.imageProduct
     ? `http://localhost:8000${dados.imageProduct}`
@@ -61,7 +64,7 @@ export const Card = ({ dados, atributos, onDelete, onHistoricSubmit }) => {
           </button>
 
           <button
-            onClick={() => onDelete(dados.id)}
+            onClick={() => navigate(`/homepage/updateProduct/${dados.id}`)}
             className="bg-purple-700  text-white font-semibold py-2 px-4 rounded"
           >
             Update

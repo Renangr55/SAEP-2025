@@ -6,7 +6,7 @@ import { Input } from "../components/Input"
 import api from "../services/api"
 import { useEffect } from "react"
 import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 
 
 
@@ -45,7 +45,7 @@ export const LoginPage  = () =>{
 
             navigate("/homepage");
 
-            alert("Login realizado com sucesso!");
+            alert("it was sucessfull");
         } catch (error) {
             alert(error.response?.data?.error || "Erro ao fazer login");
             console.log("error", error.response?.data);
@@ -70,19 +70,28 @@ export const LoginPage  = () =>{
                         labelId={"usernameInput"}
                         widthInput={"w-70"}
                         heightInput={"h-10"}
-                        textLabel={"Username"}
+                        textLabel={"username"}
                         bgInput={"bg-gray-200"}
                         register={register("username")}
                         />
 
+                        {errors.username && (
+                            <p className="text-red-500 text-sm">{errors.username.message}</p>
+                        )}
+
                         <Input 
-                        typeInput={"password"}
+                        inputType={"password"}
                         textLabel={"password"}
                         widthInput={"w-70"}
                         heightInput={"h-10"}
+                        
                         bgInput={"bg-gray-200"}
                         register={register("password")}
                         />
+
+                        {errors.password && (
+                            <p className="text-red-500 text-sm">{errors.password.message}</p>
+                        )}
                     </section>
 
                     <section className="flex justify-center w-full pb-2">
@@ -94,6 +103,12 @@ export const LoginPage  = () =>{
                         widhtButton={"w-50"}
                         textColor={"text-white"}
                         />
+                    </section>
+
+                    <section className="flex justify-center h-10">
+                        <Link to={'/'} className="text-blue-600">
+                            Register Page
+                        </Link>
                     </section>
                 </section>
 

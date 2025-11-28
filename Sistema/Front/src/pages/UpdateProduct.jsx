@@ -1,10 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import api from "../services/api";
 import Button from "../components/Button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import Footer from "../components/Footer";
 
-export const CreateProduct = () => {
+export const UpdateProduct = () => {
+    // não usei o component input por que esse endpoint precisa ser formData
+
+
+    const { id } = useParams();
+
     const [name, setName] = useState("");
     const [weight, setWeight] = useState("");
     const [height, setHeight] = useState("");
@@ -16,28 +22,48 @@ export const CreateProduct = () => {
     const [categories, setCategories] = useState([]);
     const [loadingCategories, setLoadingCategories] = useState(true);
 
-    const [errors, setErrors] = useState({}); // ← NOVO
+    const [errors, setErrors] = useState({});
 
     const navigate = useNavigate();
 
+    // load data
     useEffect(() => {
-        const fetchCategories = async () => {
+        const loadProduct = async () => {
+            try {
+                const response = await api.get(`api/updateDestroyRetriveProduct/${id}`);
+                const data = response.data;
+
+                setName(data.name);
+                setWeight(data.weight);
+                setHeight(data.height);
+                setQuantity(data.quantity);
+                setMinimumQuantity(data.minimum_quantity);
+                setCategory(data.categoryProduct);
+            } catch (error) {
+                console.log("Erro ao carregar produto:", error);
+            }
+        };
+
+        const loadCategories = async () => {
             try {
                 const response = await api.get("api/createListCategory");
                 setCategories(response.data);
-            } catch (error) {
-                alert("Error loading categories");
+            } catch (err) {
+                console.log("Erro ao carregar categorias:", err);
             } finally {
                 setLoadingCategories(false);
             }
         };
-        fetchCategories();
-    }, []);
 
+        loadProduct();
+        loadCategories();
+    }, [id]);
+
+    // Validation
     const validateFields = () => {
         let newErrors = {};
 
-        if (!name.trim()) newErrors.name = "Product name is required";
+        if (!name?.trim()) newErrors.name = "Product name is required";
         if (!weight) newErrors.weight = "Weight is required";
         if (!height) newErrors.height = "Height is required";
         if (!quantity) newErrors.quantity = "Quantity is required";
@@ -52,41 +78,49 @@ export const CreateProduct = () => {
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSend = async (e) => {
+    // update
+    const handleUpdate = async (e) => {
         e.preventDefault();
 
         if (!validateFields()) return;
 
         const formData = new FormData();
+
         formData.append("name", name);
-        formData.append("weight", Number(weight));
-        formData.append("height", Number(height));
-        formData.append("quantity", Number(quantity));
-        formData.append("minimum_quantity", Number(minimum_quantity));
-        formData.append("categoryProduct", Number(categoryProduct));
+        formData.append("weight", weight);
+        formData.append("height", height);
+        formData.append("quantity", quantity);
+        formData.append("minimum_quantity", minimum_quantity);
+        formData.append("categoryProduct", categoryProduct);
 
         if (imageProduct) {
             formData.append("imageProduct", imageProduct);
         }
 
         try {
-            await api.post("api/createListProduct", formData);
-            alert("Product created successfully!");
+            await api.put(`api/updateDestroyRetriveProduct/${id}`, formData, {
+                headers: { "Content-Type": "multipart/form-data" },
+            });
+
+            alert("Product updated successfully!");
             navigate("/homepage");
+
         } catch (error) {
-            alert(error.response?.data || "Error creating product");
+            console.log("Erro:", error.response?.data || error);
+            alert("Error when updating product.");
         }
     };
 
     return (
         <>
             <Header />
-            <main className="h-screen">
+
+            <main className="h-screen bg-linear-to-r">
                 <section className="pl-5 pt-10">
-                    <h1 className="font-bold text-5xl">Create a Tool</h1>
+                    <h1 className="font-bold text-5xl">Update Product</h1>
                 </section>
 
-                <form onSubmit={handleSend} className="flex flex-col gap-5">
+                <form onSubmit={handleUpdate} className="flex flex-col gap-5">
 
                     {/* Product name */}
                     <section className="flex flex-col pl-5 pt-5">
@@ -102,7 +136,7 @@ export const CreateProduct = () => {
 
                     {/* Weight */}
                     <section className="flex flex-col pl-5">
-                        <label>Product weight:</label>
+                        <label>Weight:</label>
                         <input
                             className="h-12 w-80 pl-5 bg-gray-300"
                             type="number"
@@ -134,10 +168,12 @@ export const CreateProduct = () => {
                             onChange={(e) => setQuantity(e.target.value)}
                         />
                         {errors.quantity && <p className="text-red-500">{errors.quantity}</p>}
-                        {errors.quantityCheck && <p className="text-red-500">{errors.quantityCheck}</p>}
+                        {errors.quantityCheck && (
+                            <p className="text-red-500">{errors.quantityCheck}</p>
+                        )}
                     </section>
 
-                    {/* Minimum Quantity */}
+                    {/* Minimum quantity */}
                     <section className="flex flex-col pl-5">
                         <label>Minimum quantity:</label>
                         <input
@@ -146,12 +182,15 @@ export const CreateProduct = () => {
                             value={minimum_quantity}
                             onChange={(e) => setMinimumQuantity(e.target.value)}
                         />
-                        {errors.minimum_quantity && <p className="text-red-500">{errors.minimum_quantity}</p>}
+                        {errors.minimum_quantity && (
+                            <p className="text-red-500">{errors.minimum_quantity}</p>
+                        )}
                     </section>
 
-                    {/* Category */}
+                    {/* Category with select */}
                     <section className="flex flex-col pl-5">
                         <label>Category:</label>
+
                         {loadingCategories ? (
                             <p>Loading categories...</p>
                         ) : (
@@ -168,12 +207,15 @@ export const CreateProduct = () => {
                                 ))}
                             </select>
                         )}
-                        {errors.categoryProduct && <p className="text-red-500">{errors.categoryProduct}</p>}
+
+                        {errors.categoryProduct && (
+                            <p className="text-red-500">{errors.categoryProduct}</p>
+                        )}
                     </section>
 
                     {/* Image upload */}
                     <section className="flex flex-col pl-5">
-                        <label>Upload of Images:</label>
+                        <label>Upload new image (optional):</label>
                         <input
                             className="h-12 w-80 pl-5 bg-gray-300"
                             type="file"
@@ -185,7 +227,7 @@ export const CreateProduct = () => {
                     <section className="flex justify-start pl-5 w-full pb-2">
                         <Button
                             typeButton="submit"
-                            children={"Sign now"}
+                            children={"Update Product"}
                             bgButton={"bg-linear-to-r from-blue-500 to-purple-500"}
                             heightButton={"h-10"}
                             widhtButton={"w-80"}
@@ -194,8 +236,10 @@ export const CreateProduct = () => {
                     </section>
                 </form>
             </main>
+
+            <Footer />
         </>
     );
 };
 
-export default CreateProduct;
+export default UpdateProduct;
