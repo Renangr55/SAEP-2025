@@ -11,3 +11,5 @@ export const Input = ({inputType,labelId,textLabel,idInput,register,widthInput, 
         </section>
     )
 }
+
+export default Input

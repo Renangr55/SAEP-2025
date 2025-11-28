@@ -1,4 +1,6 @@
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
 from .views import (
     UserListCreate,
 
@@ -42,4 +44,4 @@ urlpatterns = [
     path("api/addProduct/", add_quantity_product_view, name="add_product"),
     path("api/removeProduct/", remove_quantity_product_view, name="remove_product")
 
-    ]
+    ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

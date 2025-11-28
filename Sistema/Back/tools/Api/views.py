@@ -5,6 +5,8 @@ from time import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import json
+from rest_framework.parsers import MultiPartParser, FormParser
+
 
 
 
@@ -52,7 +54,11 @@ class UserLoginView(APIView):
 
         if user:
             token, _ = Token.objects.get_or_create(user=user)
-            return Response({"token": token.key})
+            return Response({
+                "token": token.key,
+                "user_id": user.id,  # ✅ ID do usuário
+                "role": getattr(user, "role", None)  # se você tiver um campo role
+            })
         else:
             return Response({"error": "Invalid credentials"}, status=401)
 
@@ -74,6 +80,36 @@ class HistoricListCreate(generics.ListCreateAPIView):
     queryset = Historic.objects.all()
     serializer_class = HistoricSerializer
 
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        try:
+            product = Product.objects.get(id=data.get("product"))
+            user = User.objects.get(id=data.get("responsibleUser"))
+
+            historic = Historic.objects.create(
+                product=product,
+                responsibleUser=user,
+                typeOperation=data.get("typeOperation"),
+                quantityProduct=data.get("quantityProduct"),
+                operation_date=data.get("operation_date") or timezone.now()
+            )
+
+            # Atualiza quantidade do produto
+            if data.get("typeOperation") == "Input":
+                product.quantity += int(data.get("quantityProduct"))
+            else:
+                product.quantity -= int(data.get("quantityProduct"))
+            product.save()
+
+            serializer = self.get_serializer(historic)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        except Product.DoesNotExist:
+            return Response({"Error": "Product not found"}, status=404)
+        except User.DoesNotExist:
+            return Response({"Error": "User not found"}, status=404)
+        except Exception as e:
+            return Response({"Error": str(e)}, status=400)  
 # Historic: update,retrive and destroy
 class HistoricRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     queryset = Historic.objects.all()
@@ -88,6 +124,8 @@ class HistoricRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
 class ProductListCreate(generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    parser_classes = (MultiPartParser, FormParser)
+
 
 
     def list(self,request,*args, **kwargs):
@@ -173,7 +211,6 @@ def add_quantity_product_view(request):
         product_id = data.get("product_id")
         quantity = data.get("quantity")
         user_id = data.get("user_id")
-        
         quantity = data.get("quantity")
 
         if quantity  is None:
@@ -188,13 +225,17 @@ def add_quantity_product_view(request):
         product = Product.objects.get(id=product_id)
         product.quantity += quantity
         product.save()
+        
+        user = User.objects.get(id=user_id)
 
         Historic.objects.create(
             product=product,
-            responsibleUser=User.objects.get(id=user_id),
+            responsibleUser=user,
             typeOperation="Input",
             quantityProduct=quantity
         )
+
+        
 
         return JsonResponse({"message": "it product has updated and Historic created!"})
 
@@ -218,8 +259,7 @@ def remove_quantity_product_view(request):
 
         product_id = data.get("product_id")
         quantity = data.get("quantity")
-        user_id = data.get("user_id")
-        
+        user_id = data.get("user_id")  # enviado pelo frontend
         quantity = data.get("quantity")
 
         if quantity  is None:
@@ -241,12 +281,15 @@ def remove_quantity_product_view(request):
             return JsonResponse({"Error": "the quantity of product cannot be bigger than or equal to zero"})
         
 
+        user = User.objects.get(id=user_id)
+
         Historic.objects.create(
             product=product,
-            responsibleUser=User.objects.get(id=user_id),
+            responsibleUser=user,
             typeOperation="Output",
             quantityProduct=quantity
         )
+
 
         return JsonResponse({"message": "it product has updated and Historic created!"})
 

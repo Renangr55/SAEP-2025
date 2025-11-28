@@ -64,3 +64,15 @@ class ProductSerializer(serializers.ModelSerializer):
     
     def get_historic(self,obj):
         return HistoricSerializer(obj.historic.order_by('-created_at'), many=True).data #ordering historic by create date
+    
+    def validate(self, data):
+        quantity = data.get("quantity")
+        minimum = data.get("minimum_quantity")
+
+        if quantity is not None and minimum is not None:
+            if quantity < minimum:
+                raise serializers.ValidationError({
+                    "quantity": "A quantidade não pode ser menor que a quantidade mínima."
+                })
+
+        return data

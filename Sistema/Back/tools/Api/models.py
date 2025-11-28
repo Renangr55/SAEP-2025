@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.utils import timezone
 
 
 # Create your models here.
@@ -45,7 +46,7 @@ class Historic(models.Model):
     ("Output", "Output")
     ]
     responsibleUser = models.ForeignKey(User,on_delete=models.CASCADE)
-
+    operation_date = models.DateTimeField(default=timezone.now)
     typeOperation = models.CharField(choices=typeOperationChoices,max_length=6)
     quantityProduct = models.IntegerField()
     product = models.ForeignKey(Product, related_name='historic', on_delete=models.CASCADE)

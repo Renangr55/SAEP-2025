@@ -6,7 +6,7 @@ export const Header = () => {
     return (
         <>
         <header>
-            <section className="flex justify-between items-center gap-4 w-full h-20 bg-linear-to-r from-blue-500 to-purple-500 ">
+            <section className="flex justify-between items-center gap-4 w-full pr-20 h-20 bg-linear-to-r from-blue-500 to-purple-500 ">
                 <figure className="pl-5">
                     <img src={image} alt="" className="h-10" />
                 </figure>
@@ -17,7 +17,7 @@ export const Header = () => {
                         Home
                     </Link>
 
-                    <Link to={""} className="text-white">
+                    <Link to={"/createProduct"} className="text-white">
                         Create Product
                     </Link>
 
@@ -28,6 +28,13 @@ export const Header = () => {
                     <Link to={""} className="text-white">
                             See historic
                     </Link>
+
+                    <Link to={"/homepage/stockcontrol"} className="text-white">
+                            Stock Control
+                    </Link>
+
+                    
+                    
 
                 </section>
             

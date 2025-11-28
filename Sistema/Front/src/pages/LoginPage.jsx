@@ -26,24 +26,31 @@ export const LoginPage  = () =>{
         });
     
     const onSubmit = async (data) => {
-        const payload = ({
-            "username": data.username,
-            "password": data.password
-        })
+        const payload = {
+            username: data.username,
+            password: data.password
+        };
 
         try {
             const response = await api.post("api/auth/login", payload);
             console.log(response.data);
 
+            // Salva token
             localStorage.setItem("token", response.data?.token);
+
+            // Salva userId e role
+            localStorage.setItem("userId", response.data?.user_id);
+            localStorage.setItem("role", response.data?.role || "");
+
             navigate("/homepage");
 
-            alert("it was sucessfull");
+            alert("Login realizado com sucesso!");
         } catch (error) {
             alert(error.response?.data?.error || "Erro ao fazer login");
             console.log("error", error.response?.data);
         }
-    }
+    };
+
     const navigate = useNavigate()
 
     

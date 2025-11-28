@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-export const Button = ({ typeButton = "button", typeLink = "", 
+export const Button = ({ typeButton = "button", typeLink = "", onClickFuction,
     children,
     bgButton,
     heightButton, 
@@ -18,7 +18,7 @@ export const Button = ({ typeButton = "button", typeLink = "",
     }
 
     return (
-        <button type={typeButton} className={`${bgButton} ${heightButton} ${widhtButton} ${textColor} cursor-pointer`}>
+        <button onClick={onClickFuction} type={typeButton} className={`${bgButton} ${heightButton} ${widhtButton} ${textColor} cursor-pointer`}>
             {children}
         </button>
     );
