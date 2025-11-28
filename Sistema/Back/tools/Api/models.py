@@ -14,7 +14,7 @@ class User(AbstractUser):
         verbose_name_plural = "Users"
 
 class Category(models.Model):
-    categoryName = models.CharField(unique=True)
+    categoryName = models.CharField(unique=True,max_length=120)
 
     def __str__(self):
         return self.categoryName
