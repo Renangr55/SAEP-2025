@@ -93,7 +93,7 @@ class HistoricListCreate(generics.ListCreateAPIView):
                 quantityProduct=data.get("quantityProduct"),
                 operation_date=data.get("operation_date") or timezone.now()
             )
-
+    
             # Atualiza quantidade do produto
             if data.get("typeOperation") == "Input":
                 product.quantity += int(data.get("quantityProduct"))
@@ -207,27 +207,37 @@ def add_quantity_product_view(request):
 
     try:
         data = json.loads(request.body)
-
         product_id = data.get("product_id")
         quantity = data.get("quantity")
         user_id = data.get("user_id")
-        quantity = data.get("quantity")
 
-        if quantity  is None:
+        if not product_id:
+            return JsonResponse({"Error": "product_id is required"}, status=400)
+        if not user_id:
+            return JsonResponse({"Error": "user_id is required"}, status=400)
+        if quantity is None:
             return JsonResponse({"Error": "quantity is required"}, status=400)
-
 
         try:
             quantity = int(quantity)
         except ValueError:
             return JsonResponse({"Error": "quantity must be an integer"}, status=400)
 
-        product = Product.objects.get(id=product_id)
+        try:
+            product = Product.objects.get(id=int(product_id))
+        except Product.DoesNotExist:
+            return JsonResponse({"Error": "Product not found"}, status=404)
+
+        try:
+            user = User.objects.get(id=int(user_id))
+        except User.DoesNotExist:
+            return JsonResponse({"Error": "User not found"}, status=404)
+
+        # Atualiza quantidade do produto
         product.quantity += quantity
         product.save()
-        
-        user = User.objects.get(id=user_id)
 
+        # Cria histórico
         Historic.objects.create(
             product=product,
             responsibleUser=user,
@@ -235,15 +245,7 @@ def add_quantity_product_view(request):
             quantityProduct=quantity
         )
 
-        
-
-        return JsonResponse({"message": "it product has updated and Historic created!"})
-
-    except Product.DoesNotExist:
-        return JsonResponse({"Error": "Product not found"}, status=404)
-
-    except User.DoesNotExist:
-        return JsonResponse({"Error": "User not found"}, status=404)
+        return JsonResponse({"Success": "Product quantity updated"}, status=201)
 
     except Exception as e:
         return JsonResponse({"Error": str(e)}, status=400)

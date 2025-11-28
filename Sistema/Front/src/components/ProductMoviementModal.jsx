@@ -17,17 +17,19 @@ export const ProductMovementModal = ({ isOpen, onClose, product, userId, onUpdat
   const { register, handleSubmit, reset, formState: { errors } } = useForm({
     resolver: zodResolver(movementSchema),
     defaultValues: {
-      operation: "Input",
+      typeOperation: "Input",
       quantity: "",
       operation_date: "",
     },
   });
 
+ 
+
   // Resetar o formulário quando abrir
   useEffect(() => {
     if (isOpen) {
       reset({
-        operation: "Input",
+        typeOperation: "Input",
         quantity: "",
         operation_date: "",
       });
@@ -38,10 +40,10 @@ export const ProductMovementModal = ({ isOpen, onClose, product, userId, onUpdat
 
   const onSubmit = async (data) => {
     const payload = {
-      product_id: product.id,
-      quantity: parseInt(data.quantity),
-      user_id: userId,
-      operation_date: data.operation_date,
+        product_id: product.id,
+        quantity: parseInt(data.quantity),
+        user_id: Number(userId), // <--- trocar
+        operation_date: data.operation_date,
     };
 
     try {

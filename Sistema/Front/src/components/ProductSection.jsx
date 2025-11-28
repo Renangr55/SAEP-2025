@@ -11,7 +11,11 @@ export const ProductSection = ({ atributos }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const userId = localStorage.getItem("userId");
-  console.log(userId)
+  const userNumber = Number(userId)
+  if (!userNumber) {
+    alert("Usuário não encontrado!");
+    return;
+  }
 
   // Função para buscar produtos e gerenciar alertas
   const fetchProdutos = async () => {
@@ -71,10 +75,10 @@ export const ProductSection = ({ atributos }) => {
 
     try {
         const payload = {
-        user_id: userId,
+        user_id: Number(userId), // <--- aqui
         typeOperation: type,
         product_id: productId,
-        quantityProduct: parseInt(quantity),
+        quantity: parseInt(quantity),
         operation_date: operationDate || new Date().toISOString()
         };
 
