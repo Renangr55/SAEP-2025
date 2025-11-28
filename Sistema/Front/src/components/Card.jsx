@@ -38,7 +38,7 @@ export const Card = ({ dados, atributos, onDelete, onHistoricSubmit }) => {
 
   return (
     <div className="border p-4 rounded-lg shadow-md h-170 bg-white w-full max-w-sm relative">
-      {/* Imagem */}
+
       {dados.imageProduct && (
         <img src={imageURL} alt={dados.name} className="w-full h-[50%] rounded" />
       )}
@@ -57,35 +57,42 @@ export const Card = ({ dados, atributos, onDelete, onHistoricSubmit }) => {
             onClick={() => onDelete(dados.id)}
             className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded"
           >
-            Excluir
+            Remove
+          </button>
+
+          <button
+            onClick={() => onDelete(dados.id)}
+            className="bg-purple-700  text-white font-semibold py-2 px-4 rounded"
+          >
+            Update
           </button>
 
           <button
             onClick={() => setIsModalOpen(true)}
             className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
           >
-            Movimentar
+            Moviment
           </button>
         </div>
       </div>
 
       {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-20 flex justify-center items-center z-50">
+        <div className="fixed inset-0 **bg-opacity-50**  bg-black bg-opa flex justify-center items-center z-50">
           <div className="bg-white rounded-lg p-6 w-96 shadow-lg">
-            <h3 className="text-lg font-semibold mb-4">Registrar Movimentação</h3>
+            <h3 className="text-lg font-semibold mb-4">Register Moviment</h3>
 
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
               <div>
-                <label className="block mb-1">Tipo de Operação:</label>
+                <label className="block mb-1">Operation type:</label>
                 <select {...register("operation")} className="border w-full p-2 rounded">
-                  <option value="Input">Entrada</option>
-                  <option value="Output">Saída</option>
+                  <option value="Input">Input</option>
+                  <option value="Output">Output</option>
                 </select>
               </div>
 
               <div>
-                <label className="block mb-1">Quantidade:</label>
+                <label className="block mb-1">Quantity:</label>
                 <input
                   type="number"
                   {...register("quantity", { valueAsNumber: true })}
@@ -102,13 +109,13 @@ export const Card = ({ dados, atributos, onDelete, onHistoricSubmit }) => {
                   onClick={() => setIsModalOpen(false)}
                   className="bg-gray-300 hover:bg-gray-400 py-2 px-4 rounded"
                 >
-                  Cancelar
+                  Cancel
                 </button>
                 <button
                   type="submit"
-                  className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded"
+                  className="bg-purple-500 hover:bg-purple-700 text-white py-2 px-4 rounded"
                 >
-                  Registrar
+                  Resgister
                 </button>
               </div>
             </form>

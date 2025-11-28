@@ -13,11 +13,11 @@ export const ProductSection = ({ atributos }) => {
   const userId = localStorage.getItem("userId");
   const userNumber = Number(userId)
   if (!userNumber) {
-    alert("Usuário não encontrado!");
+    alert("User not found!");
     return;
   }
 
-  // buble sort
+  // mergeSort
   const mergeSortProducts = (arr) => {
     if (arr.length <= 1) return arr;
 
@@ -42,21 +42,22 @@ export const ProductSection = ({ atributos }) => {
       }
     }
 
-    // Adiciona o restante
+    // add all to remaining
     return result.concat(left.slice(i)).concat(right.slice(j));
   };
 
-  // Função para buscar produtos e gerenciar alertas
+  // search product and control alert
   const fetchProdutos = async () => {
   try {
     const response = await api.get("api/createListProduct");
+    console.log("fecthproduct", response.data)
     const { Product, alert } = response.data;
 
-    // Ordena produtos pelo nome antes de setar
+    // order product for name
     const sortedProducts = mergeSortProducts(Product);
     setProdutos(sortedProducts);
 
-    // Lida com alertas
+    // responsible for alerts
     const currentAlerts = alert || [];
     const newAlerts = currentAlerts.filter(msg => !alertShown.includes(msg));
     newAlerts.forEach(msg => window.alert(msg));
@@ -71,19 +72,19 @@ export const ProductSection = ({ atributos }) => {
     fetchProdutos();
   }, []);
 
-  // Abrir modal com produto selecionado
+  // openModal
   const handleOpenModal = (product) => {
     setSelectedProduct(product);
     setIsModalOpen(true);
   };
 
-  // Fechar modal
+  // Closemodal
   const handleCloseModal = () => {
     setSelectedProduct(null);
     setIsModalOpen(false);
   };
 
-  // Deletar produto
+  // remove product
   const handleDelete = async (id) => {
     try {
       await api.delete(`api/updateDestroyRetriveProduct/${id}`);
@@ -95,13 +96,13 @@ export const ProductSection = ({ atributos }) => {
     }
   };
 
-  // Movimentação (entrada/saída) via modal
+  // Moviement(Input or output)
   const handleHistoricSubmit = async (productId, type, quantity, operationDate) => {
     if (!quantity || quantity <= 0) return;
 
     try {
         const payload = {
-        user_id: Number(userId), // <--- aqui
+        user_id: Number(userId),
         typeOperation: type,
         product_id: productId,
         quantity: parseInt(quantity),
@@ -114,7 +115,7 @@ export const ProductSection = ({ atributos }) => {
         await api.delete("/api/removeProduct/", { data: payload });
         }
 
-    // Atualiza produtos após movimentação
+    // Update the products after moviement
     await fetchProdutos();
   } catch (error) {
     console.error(error.response?.data || error);

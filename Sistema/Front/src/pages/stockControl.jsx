@@ -14,11 +14,11 @@ export const StokeControl = () => {
                 </section>
             <ProductSection
                 atributos={[
-                    { key: "quantity", label: "Quantidade" },
-                    { key: "minimum_quantity", label: "Qtd Mínima" },
-                    { key: "weight", label: "Peso" },
-                    { key: "height", label: "Altura" },
-                    { key: "category_name", label: "Categoria" } // se vier no serializer
+                    { key: "quantity", label: "Quanntity" },
+                    { key: "minimum_quantity", label: "Minimum Quantity" },
+                    { key: "weight", label: "wheight" },
+                    { key: "height", label: "height" },
+                    { key: "category_name", label: "Category" } 
                 ]}
             />
             </section>

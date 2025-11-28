@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 export const Header = () => {
     const navigate = useNavigate()
-    const username = localStorage.getItem("username"); // ✅
+    const username = localStorage.getItem("username"); 
     console.log(username)
 
     const logout = () => {

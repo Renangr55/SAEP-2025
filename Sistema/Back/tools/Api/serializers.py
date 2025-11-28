@@ -58,6 +58,9 @@ class ProductSerializer(serializers.ModelSerializer):
 
     historic = serializers.SerializerMethodField(read_only=True)
 
+    category_name = serializers.CharField(source='categoryProduct.categoryName', read_only=True)
+
+
     class Meta:
         model = Product
         fields = '__all__'
