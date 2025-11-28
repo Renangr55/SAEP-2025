@@ -37,22 +37,22 @@ export const Card = ({ dados, atributos, onDelete, onHistoricSubmit }) => {
   };
 
   return (
-    <div className="border p-4 rounded-lg shadow-md bg-white w-full max-w-sm relative">
+    <div className="border p-4 rounded-lg shadow-md h-170 bg-white w-full max-w-sm relative">
       {/* Imagem */}
       {dados.imageProduct && (
-        <img src={imageURL} alt={dados.name} className="w-full h-40 object-cover rounded" />
+        <img src={imageURL} alt={dados.name} className="w-full h-[50%] rounded" />
       )}
 
       {/* Conteúdo */}
       <div className="pt-3">
-        <h2 className="text-xl text-center font-semibold">{dados.name}</h2>
+        <h2 className="text-xl text-white text-center font-semibold bg-linear-to-r from-blue-500 to-purple-500">{dados.name}</h2>
         {atributos.map((campo, index) => (
           <p className="text-gray-700 mt-1" key={index}>
             <strong>{campo.label}:</strong> {dados[campo.key]}
           </p>
         ))}
 
-        <div className="flex justify-between mt-3">
+        <div className="flex justify-between pt-5 ">
           <button
             onClick={() => onDelete(dados.id)}
             className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded"

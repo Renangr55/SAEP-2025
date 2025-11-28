@@ -40,6 +40,7 @@ class UserListCreate(generics.ListCreateAPIView):
 class UserRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    
 
 
 class UserLoginView(APIView):
@@ -57,6 +58,7 @@ class UserLoginView(APIView):
             return Response({
                 "token": token.key,
                 "user_id": user.id,  # ✅ ID do usuário
+                "username": user.username,  # ✅ adiciona isso
                 "role": getattr(user, "role", None)  # se você tiver um campo role
             })
         else:

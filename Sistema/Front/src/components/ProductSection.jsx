@@ -17,29 +17,55 @@ export const ProductSection = ({ atributos }) => {
     return;
   }
 
+  // buble sort
+  const mergeSortProducts = (arr) => {
+    if (arr.length <= 1) return arr;
+
+    const middle = Math.floor(arr.length / 2);
+    const left = mergeSortProducts(arr.slice(0, middle));
+    const right = mergeSortProducts(arr.slice(middle));
+
+    return merge(left, right);
+  };
+
+  const merge = (left, right) => {
+    const result = [];
+    let i = 0, j = 0;
+
+    while (i < left.length && j < right.length) {
+      if (left[i].name.toLowerCase() < right[j].name.toLowerCase()) {
+        result.push(left[i]);
+        i++;
+      } else {
+        result.push(right[j]);
+        j++;
+      }
+    }
+
+    // Adiciona o restante
+    return result.concat(left.slice(i)).concat(right.slice(j));
+  };
+
   // Função para buscar produtos e gerenciar alertas
   const fetchProdutos = async () => {
-    try {
-      const response = await api.get("api/createListProduct");
-      const { Product, alert } = response.data;
+  try {
+    const response = await api.get("api/createListProduct");
+    const { Product, alert } = response.data;
 
-      setProdutos(Product);
-      console.log("Produtos:", produtos);
+    // Ordena produtos pelo nome antes de setar
+    const sortedProducts = mergeSortProducts(Product);
+    setProdutos(sortedProducts);
 
+    // Lida com alertas
+    const currentAlerts = alert || [];
+    const newAlerts = currentAlerts.filter(msg => !alertShown.includes(msg));
+    newAlerts.forEach(msg => window.alert(msg));
+    setAlertShown(currentAlerts);
+  } catch (error) {
+    console.log("Erro ao carregar produtos:", error);
+  }
+};
 
-      // Garante que alertShown só contenha alertas ativos
-      const currentAlerts = alert || [];
-      const newAlerts = currentAlerts.filter(msg => !alertShown.includes(msg));
-
-      // Mostra apenas novos alertas
-      newAlerts.forEach(msg => window.alert(msg));
-
-      // Atualiza alertShown para refletir o estado atual
-      setAlertShown(currentAlerts);
-    } catch (error) {
-      console.log("Erro ao carregar produtos:", error);
-    }
-  };
 
   useEffect(() => {
     fetchProdutos();

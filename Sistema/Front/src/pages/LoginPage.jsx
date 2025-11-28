@@ -40,6 +40,7 @@ export const LoginPage  = () =>{
 
             // Salva userId e role
             localStorage.setItem("userId", response.data?.user_id);
+            localStorage.setItem("username", response.data?.username); // ✅
             localStorage.setItem("role", response.data?.role || "");
 
             navigate("/homepage");

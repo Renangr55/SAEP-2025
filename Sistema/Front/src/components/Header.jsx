@@ -1,8 +1,28 @@
 import { Link } from "react-router-dom"
 import image from "../assets/image.png"
+import React from "react";
+import Button from "./Button";
+import { useNavigate } from "react-router-dom";
 
 
 export const Header = () => {
+    const navigate = useNavigate()
+    const username = localStorage.getItem("username"); // ✅
+    console.log(username)
+
+    const logout = () => {
+        try{
+            console.log(localStorage.getItem("token"))
+            const log = localStorage.removeItem("token")
+            console.log(log)
+            console.log(localStorage.getItem("token"))
+            navigate("/login")
+            alert("Logout")
+        } catch(error){
+            console.log(error)
+        }
+    }
+
     return (
         <>
         <header>
@@ -13,7 +33,7 @@ export const Header = () => {
 
                 <section className="flex justify-center gap-10 w-150">
 
-                    <Link to={""} className="text-white">
+                    <Link to={"/homepage"} className="text-white">
                         Home
                     </Link>
 
@@ -36,6 +56,23 @@ export const Header = () => {
                     
                     
 
+                </section>
+
+                <section className="w-20">
+                    <h1 className="text-white">Username: {username}</h1>
+                </section>
+
+                <section>
+                    <Button 
+                        typeButton="button" 
+                        children={"logout"} 
+                        bgButton={"bg-red-600"} 
+                        heightButton={"h-10"} 
+                        widhtButton={"w-30"}
+                        onClickFuction={() => 
+                            logout()}
+                        textColor={"text-white"}
+                        />
                 </section>
             
             </section>
